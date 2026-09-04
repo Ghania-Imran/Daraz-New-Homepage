@@ -463,15 +463,20 @@ $(document).ready(function () {
     $("#mainContent").on("click", ".add-cart", function (event) {
 
         event.stopPropagation();
+    var productName = $(this).siblings("h3").text();
 
-        var productName = $(this).siblings("h3").text();
+    var productPrice = $(this).siblings(".price").text();
 
-        var productPrice = $(this).siblings(".price").text();
+    var productImage = $(this)
+        .siblings(".product-image")
+        .find("img")
+        .attr("src");
 
-        cart.push({
-            name: productName,
-            price: productPrice
-        });
+    cart.push({
+        name: productName,
+        price: productPrice,
+        image: productImage
+    });
 
         $("#cartCount").text(cart.length);
 
@@ -479,37 +484,46 @@ $(document).ready(function () {
 
     });
 
+
     // SHOW PRODUCTS IN CART
 
     $("#cartButton").click(function () {
 
+        $("#floatingCart").show();
+
+        var cartItems = "";
+
         if (cart.length == 0) {
 
-            alert("Your cart is empty.");
+            cartItems = "<p>Your cart is empty.</p>";
 
         } else {
 
-            var cartItems = "";
-
             for (var i = 0; i < cart.length; i++) {
 
-                cartItems +=
-                    cart[i].name +
-                    " - " +
-                    cart[i].price +
-                    "\n";
+                cartItems += `
+                    <div class="cart-product">
+
+                        <img src="${cart[i].image}" width="60">
+
+                        <div>
+                            <strong>${cart[i].name}</strong>
+                            <p>${cart[i].price}</p>
+                        </div>
+
+                    </div>
+                `;
 
             }
 
-            alert("Your cart:\n\n" + cartItems);
-
         }
 
-    });
+    $("#cartItems").html(cartItems);
 
+});
  // EMPTY CART / CHECKOUT  
 
-    $("#checkoutBtn").click(function () {
+    $("#floatingCheckoutBtn").click(function () {
 
         if (cart.length == 0) {
 
@@ -520,6 +534,8 @@ $(document).ready(function () {
             cart = [];
 
             $("#cartCount").text("0");
+
+             $("#cartItems").html("");
 
             alert("Checkout successful! Your cart is now empty.");
 
